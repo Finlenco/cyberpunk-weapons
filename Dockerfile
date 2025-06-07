@@ -9,6 +9,9 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
+# 复制源代码和资源文件
+COPY src src
+
 # 赋予 Maven Wrapper 执行权限
 RUN chmod +x mvnw
 
