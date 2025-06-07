@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博朋克2077不朽武器图鉴</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🌃 赛博朋克2077不朽武器图鉴 🛠️</h1>
+        <p>探索夜之城中所有独特而强大的不朽武器！</p>
+    </header>
+
+    <section id="filters">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-type="">所有类型</button>
+            <button class="filter-btn" data-type="手枪">手枪</button>
+            <button class="filter-btn" data-type="冲锋枪">冲锋枪</button>
+            <button class="filter-btn" data-type="武士刀">武士刀</button>
+            <button class="filter-btn" data-type="狙击枪">狙击枪</button>
+            <button class="filter-btn" data-type="突击步枪">突击步枪</button>
+            <button class="filter-btn" data-type="霰弹枪">霰弹枪</button>
+            <button class="filter-btn" data-type="左轮手枪">左轮手枪</button>
+            <button class="filter-btn" data-type="单手棍棒">单手棍棒</button>
+            <button class="filter-btn" data-type="精准步枪">精准步枪</button>
+            <button class="filter-btn" data-type="小刀">小刀</button>
+            <button class="filter-btn" data-type="双手棍棒">双手棍棒</button>
+            <button class="filter-btn" data-type="锤子">锤子</button>
+        </div>
+    </section>
+
+    <main id="weapon-list">
+    </main>
+
+    <footer>
+        <p>&copy; 2077 夜之城武器研究部</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const weaponListContainer = document.getElementById('weapon-list');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            let allWeapons = []; // To store all fetched weapons
+
+            const displayWeapons = (weaponsToDisplay) => {
+                weaponListContainer.innerHTML = ''; // Clear existing cards
+                if (weaponsToDisplay.length === 0) {
+                    weaponListContainer.innerHTML = '<p style="color: #ff6b6b; text-align: center; width: 100%;">未找到匹配的武器。</p>';
+                    return;
+                }
+                weaponsToDisplay.forEach(weapon => {
+                    const weaponCard = document.createElement('div');
+                    weaponCard.classList.add('weapon-card');
+
+                    weaponCard.innerHTML = `
+                        <div class="weapon-summary">
+                            <h2>${weapon.name}</h2>
+                            <p class="type">分类：${weapon.type}</p>
+                        </div>
+                        <div class="weapon-details">
+                            <img src="${weapon.imageUrl}" alt="${weapon.name}">
+                            <p class="acquisition">获取方式：${weapon.acquisitionMethod}</p>
+                        </div>
+                    `;
+                    weaponListContainer.appendChild(weaponCard);
+                });
+            };
+
+            const filterWeapons = (selectedType) => {
+                let filtered = allWeapons;
+
+                if (selectedType) {
+                    filtered = allWeapons.filter(weapon => weapon.type === selectedType);
+                }
+                displayWeapons(filtered);
+            };
+
+            fetch('http://localhost:8080/api/weapons')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(weapons => {
+                    allWeapons = weapons; // Store all fetched weapons
+                    displayWeapons(allWeapons); // Display all initially
+                })
+                .catch(error => {
+                    console.error('Error fetching weapons:', error);
+                    weaponListContainer.innerHTML = '<p style="color: red;">加载武器信息失败，请检查后端服务是否正常运行。</p>';
+                });
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    filterWeapons(button.dataset.type);
+                });
+            });
+
+            // Event delegation for weapon card interactions
+            weaponListContainer.addEventListener('click', (event) => {
+                const card = event.target.closest('.weapon-card');
+                if (card) {
+                    // Toggle current card's expanded state
+                    card.classList.toggle('expanded');
+                    if (card.classList.contains('expanded')) {
+                        card.classList.remove('hover-details'); // Remove hover state if expanded
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
