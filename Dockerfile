@@ -24,4 +24,4 @@ EXPOSE 8080
 
 # 启动 Spring Boot 应用
 # 从 target/ 目录中找到生成的 JAR 包并运行
-ENTRYPOINT ["java", "-jar", "target/*.jar"] 
+ENTRYPOINT ["java", "-jar", "target/cyberpunk-weapons-0.0.1-SNAPSHOT.jar"] 
