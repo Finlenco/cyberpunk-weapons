@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS WEAPON (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255),
+    acquisition_method VARCHAR(1024),
+    image_url VARCHAR(1024)
+); 
